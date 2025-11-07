@@ -18,6 +18,11 @@ run/main_scene="uid://d4fuuhpybpvnp"
 config/features=PackedStringArray("4.5", "C#", "Mobile")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=288
+window/size/viewport_height=180
+
 [dotnet]
 
 project/assembly_name="starry-night"

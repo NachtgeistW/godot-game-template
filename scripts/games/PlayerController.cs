@@ -10,12 +10,12 @@ public partial class PlayerController : CharacterBody2D
 	private Vector2 _targetPosition;
 	private Platform _platform;
 	
-	[Export] public float MinHeight = -50f;
-	[Export] public float MaxHeight = 50f;
+	[Export] public float MinHeight = -100f;
+	[Export] public float MaxHeight = 100f;
 	
 	[Export] public float InitialSpeed = 150f;
 	[Export] public float MaxSpeed = 300f;
-	[Export] public float Acceleration = 5f;
+	[Export] public float Acceleration = 2.5f;
 	private float currentSpeed;
 	public override void _Ready()
 	{
@@ -30,10 +30,11 @@ public partial class PlayerController : CharacterBody2D
 		if (_platform == Platform.PC)
 		{
 			_targetPosition.Y = GetGlobalMousePosition().Y;
-			if (_targetPosition.Y > MaxHeight) 
+			if (_targetPosition.Y > MaxHeight)
 				_targetPosition.Y = MaxHeight;
 			if (_targetPosition.Y < MinHeight)
 				_targetPosition.Y = MinHeight;
+			_targetPosition.X = GlobalPosition.X;
 		}
 		
 		if (currentSpeed < MaxSpeed)
@@ -64,6 +65,11 @@ public partial class PlayerController : CharacterBody2D
 				                          GetViewport().GetCamera2D().Zoom;
 
 				_targetPosition.Y = globalTouchPosition.Y;
+				if (_targetPosition.Y > MaxHeight)
+					_targetPosition.Y = MaxHeight;
+				if (_targetPosition.Y < MinHeight)
+					_targetPosition.Y = MinHeight;
+				_targetPosition.X = GlobalPosition.X;
 			}
 		}
 	}
