@@ -10,12 +10,12 @@ public partial class PlayerController : CharacterBody2D
 	private Vector2 _targetPosition;
 	private Platform _platform;
 	
-	[Export] public float MinHeight = -100f;
-	[Export] public float MaxHeight = 100f;
+	[Export] public float MinHeight = -90f;
+	[Export] public float MaxHeight = 90f;
 	
 	[Export] public float InitialSpeed = 150f;
 	[Export] public float MaxSpeed = 300f;
-	[Export] public float Acceleration = 2.5f;
+	[Export] public float Acceleration = 1f;
 	private float currentSpeed;
 	public override void _Ready()
 	{
@@ -44,6 +44,7 @@ public partial class PlayerController : CharacterBody2D
 		}
 
 		GlobalPosition = GlobalPosition.Lerp(_targetPosition, MoveSpeed * (float)delta);
+		//GlobalPosition = _targetPosition;
 		GlobalPosition += new Vector2(currentSpeed * (float)delta, 0);
 	}
 
