@@ -1,0 +1,61 @@
+[gd_scene load_steps=7 format=3 uid="uid://d4fuuhpybpvnp"]
+
+[ext_resource type="Texture2D" uid="uid://5lutb4xk87me" path="res://arts/sprites/background/stringstar fields/background_0.png" id="1_4dvvg"]
+[ext_resource type="PackedScene" uid="uid://v8qbigywykio" path="res://prefabs/player.tscn" id="2_4dvvg"]
+[ext_resource type="Texture2D" uid="uid://dfx7f4iqxintr" path="res://arts/sprites/background/stringstar fields/background_1.png" id="2_4vge2"]
+[ext_resource type="Texture2D" uid="uid://bvtk4pllnjdl4" path="res://arts/sprites/background/stringstar fields/background_2.png" id="3_04qyp"]
+[ext_resource type="PackedScene" uid="uid://d55wyyfgdlm4" path="res://prefabs/star.tscn" id="5_04qyp"]
+[ext_resource type="AudioStream" uid="uid://dofqlv8q7c8w7" path="res://sounds/黒魔 - Chroma - 日記 - 04 20240206.ogg" id="6_j7wrs"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Parallax2D" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.3, 1)
+repeat_size = Vector2(1152, 0)
+
+[node name="Background" type="Sprite2D" parent="Parallax2D"]
+position = Vector2(-157.99998, 0)
+scale = Vector2(1.1, 1.11)
+texture = ExtResource("1_4dvvg")
+
+[node name="Parallax2D" type="Parallax2D" parent="Parallax2D/Background"]
+scroll_scale = Vector2(0.6, 1)
+repeat_size = Vector2(1152, 0)
+
+[node name="Cloud1" type="Sprite2D" parent="Parallax2D/Background/Parallax2D"]
+texture = ExtResource("2_4vge2")
+
+[node name="Cloud2" type="Sprite2D" parent="Parallax2D/Background/Parallax2D"]
+texture = ExtResource("3_04qyp")
+
+[node name="Parallax2D2" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.3, 1)
+repeat_size = Vector2(1152, 0)
+
+[node name="Background" type="Sprite2D" parent="Parallax2D2"]
+position = Vector2(159, 0)
+scale = Vector2(1.1, 1.11)
+texture = ExtResource("1_4dvvg")
+
+[node name="Parallax2D" type="Parallax2D" parent="Parallax2D2/Background"]
+scroll_scale = Vector2(0.6, 1)
+repeat_size = Vector2(1152, 0)
+
+[node name="Cloud1" type="Sprite2D" parent="Parallax2D2/Background/Parallax2D"]
+texture = ExtResource("2_4vge2")
+
+[node name="Cloud2" type="Sprite2D" parent="Parallax2D2/Background/Parallax2D"]
+texture = ExtResource("3_04qyp")
+
+[node name="Player" parent="." instance=ExtResource("2_4dvvg")]
+position = Vector2(-120, 0)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position = Vector2(120, 0)
+zoom = Vector2(3.665, 3.665)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Player/Camera2D"]
+stream = ExtResource("6_j7wrs")
+autoplay = true
+
+[node name="Star" parent="." instance=ExtResource("5_04qyp")]

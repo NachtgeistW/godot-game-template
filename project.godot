@@ -10,14 +10,25 @@ config_version=5
 
 [application]
 
-config/name="pingpong-keepy-uppiey"
-config/features=PackedStringArray("4.5", "Mobile")
+config/name="Starry Night"
+config/name_localized={
+"zh_CN": "繁星降落的夜晚"
+}
+run/main_scene="uid://d4fuuhpybpvnp"
+config/features=PackedStringArray("4.5", "C#", "Mobile")
 config/icon="res://icon.svg"
 
 [dotnet]
 
-project/assembly_name="pingpong-keepy-uppiey"
+project/assembly_name="starry-night"
+
+[internationalization]
+
+locale/locale_filter_mode=1
+locale/country_filter=["CN"]
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

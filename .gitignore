@@ -1,9 +1,8 @@
 # Godot 4+ specific ignores
 .godot/
+/android/
+
 /git_commit.ps1
 .vs/
-
+.idea/
 builds/
-android/
-
-debug.keystore

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dofqlv8q7c8w7"
+path="res://.godot/imported/黒魔 - Chroma - 日記 - 04 20240206.ogg-0d8cfd054f8260b4e19663a192de21ee.oggvorbisstr"
+
+[deps]
+
+source_file="res://sounds/黒魔 - Chroma - 日記 - 04 20240206.ogg"
+dest_files=["res://.godot/imported/黒魔 - Chroma - 日記 - 04 20240206.ogg-0d8cfd054f8260b4e19663a192de21ee.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

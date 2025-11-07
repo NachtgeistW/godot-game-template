@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://v8qbigywykio"]
+
+[ext_resource type="Script" uid="uid://b4q3487tcge1" path="res://scripts/games/PlayerController.cs" id="1_4dohe"]
+[ext_resource type="Texture2D" uid="uid://bmcrvtvdv7ocq" path="res://arts/sprites/character/MEOWTAR THE BLUE-Sheet.png" id="1_72ieh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4dvvg"]
+atlas = ExtResource("1_72ieh")
+region = Rect2(0, 0, 160, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rnjyy"]
+atlas = ExtResource("1_72ieh")
+region = Rect2(160, 0, 160, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4vge2"]
+atlas = ExtResource("1_72ieh")
+region = Rect2(320, 0, 160, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_04qyp"]
+atlas = ExtResource("1_72ieh")
+region = Rect2(480, 0, 160, 80)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_j7wrs"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4dvvg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rnjyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4vge2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_04qyp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_72ieh"]
+size = Vector2(30, 25)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_4dohe")
+
+[node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(40, -15)
+sprite_frames = SubResource("SpriteFrames_j7wrs")
+autoplay = "default"
+frame = 2
+frame_progress = 0.5877406
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_72ieh")
