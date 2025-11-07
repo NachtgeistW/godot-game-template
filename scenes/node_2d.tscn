@@ -10,10 +10,10 @@
 [node name="Node2D" type="Node2D"]
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
-repeat_size = Vector2(576, 0)
+repeat_size = Vector2(864, 0)
 
 [node name="Background" type="Sprite2D" parent="Parallax2D"]
-scale = Vector2(2, 2)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("1_4dvvg")
 
 [node name="Cloud1" type="Sprite2D" parent="Parallax2D/Background"]
@@ -22,37 +22,28 @@ texture = ExtResource("2_4vge2")
 [node name="Cloud2" type="Sprite2D" parent="Parallax2D/Background"]
 texture = ExtResource("3_04qyp")
 
-[node name="Parallax2D3" type="Parallax2D" parent="Parallax2D/Background"]
-scroll_scale = Vector2(0, 0)
-repeat_size = Vector2(480, 0)
-
-[node name="Parallax2D2" type="Parallax2D" parent="."]
-visible = false
-scroll_scale = Vector2(0.3, 1)
-repeat_size = Vector2(1152, 0)
-
-[node name="Background" type="Sprite2D" parent="Parallax2D2"]
-position = Vector2(158, 0)
-scale = Vector2(1.1, 1.11)
+[node name="Background2" type="Sprite2D" parent="Parallax2D"]
+position = Vector2(432, 0)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("1_4dvvg")
 
-[node name="Parallax2D" type="Parallax2D" parent="Parallax2D2/Background"]
-scroll_scale = Vector2(0.6, 1)
-repeat_size = Vector2(1152, 0)
-
-[node name="Cloud1" type="Sprite2D" parent="Parallax2D2/Background/Parallax2D"]
+[node name="Cloud1" type="Sprite2D" parent="Parallax2D/Background2"]
 texture = ExtResource("2_4vge2")
 
-[node name="Cloud2" type="Sprite2D" parent="Parallax2D2/Background/Parallax2D"]
+[node name="Cloud2" type="Sprite2D" parent="Parallax2D/Background2"]
 texture = ExtResource("3_04qyp")
+
+[node name="Parallax2D3" type="Parallax2D" parent="Parallax2D/Background2"]
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(480, 0)
 
 [node name="Player" parent="." instance=ExtResource("2_4dvvg")]
 position = Vector2(-120, 0)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(120, 0)
-limit_top = -180
-limit_bottom = 180
+limit_top = -135
+limit_bottom = 135
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Player/Camera2D"]
 stream = ExtResource("6_j7wrs")
