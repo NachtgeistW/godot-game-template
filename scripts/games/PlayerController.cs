@@ -70,7 +70,7 @@ public partial class PlayerController : CharacterBody2D
 					_targetPosition.Y = MaxHeight;
 				if (_targetPosition.Y < MinHeight)
 					_targetPosition.Y = MinHeight;
-				_targetPosition.X = GlobalPosition.X;
+				_targetPosition.X = globalTouchPosition.X;
 			}
 		}
 	}
