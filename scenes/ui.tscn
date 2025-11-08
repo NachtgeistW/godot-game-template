@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b4vu1vx8g5up8"]
 
-[ext_resource type="Script" uid="uid://bg5h870nmtva1" path="res://scripts/games/UIController.cs" id="1_ui_script"]
+[ext_resource type="Script" uid="uid://bg5h870nmtva1" path="res://scripts/games/ui/UIController.cs" id="1_ui_script"]
 [ext_resource type="FontFile" uid="uid://dvvm72pp0fjae" path="res://fonts/ark-pixel-font-10px-monospaced-ttf-v2025.10.20/ark-pixel-10px-monospaced-zh_cn.ttf" id="2_x4jx1"]
 
 [node name="UI" type="CanvasLayer"]

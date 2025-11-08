@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://v8qbigywykio"]
 
-[ext_resource type="Script" uid="uid://b4q3487tcge1" path="res://scripts/games/PlayerController.cs" id="1_4dohe"]
+[ext_resource type="Script" uid="uid://b4q3487tcge1" path="res://scripts/games/player/PlayerController.cs" id="1_4dohe"]
 [ext_resource type="Texture2D" uid="uid://bmcrvtvdv7ocq" path="res://arts/sprites/character/MEOWTAR THE BLUE-Sheet.png" id="1_72ieh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4dvvg"]
