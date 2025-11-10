@@ -6,39 +6,32 @@ namespace starrynight;
 
 public partial class UIController : CanvasLayer
 {
-    private Label _scoreLabel;
-    private Label _healthLabel;
-    private Control _gameOverPanel;
-    private Label _finalScoreLabel;
-    private Button _restartButton;
-    private Button _menuButton;
+    [Export] private Label scoreLabel;
+    [Export] private Label healthLabel;
+    [Export] private Control gameOverPanel;
+    [Export] private Label finalScoreLabel;
+    [Export] private Button restartButton;
+    [Export] private Button menuButton;
 
-    private int _currentScore;
+    private int currentScore;
 
     public override void _Ready()
     {
-        _scoreLabel = GetNode<Label>("ScoreLabel");
-        _healthLabel = GetNode<Label>("HealthLabel");
-        _gameOverPanel = GetNode<Control>("GameOverPanel");
-        _finalScoreLabel = GetNode<Label>("GameOverPanel/FinalScoreLabel");
-        _restartButton = GetNode<Button>("GameOverPanel/RestartButton");
-        _menuButton = GetNode<Button>("GameOverPanel/MenuButton");
-
         EventCenter.AddListener<ScoreChangedEvent>(OnScoreChanged);
         EventCenter.AddListener<PlayerHealthChangedEvent>(OnPlayerHealthChanged);
         EventCenter.AddListener<GameOverEvent>(OnGameOver);
 
-        _gameOverPanel.Visible = false;
+        gameOverPanel.Visible = false;
         UpdateScoreDisplay(0);
         UpdateHealthDisplay(Parameters.MaxHealth);
 
-        _restartButton.Pressed += OnRestartPressed;
-        _menuButton.Pressed += OnMenuPressed;
+        restartButton.Pressed += OnRestartPressed;
+        menuButton.Pressed += OnMenuPressed;
     }
 
     private void OnScoreChanged(ScoreChangedEvent evt)
     {
-        _currentScore = evt.Score;
+        currentScore = evt.Score;
         UpdateScoreDisplay(evt.Score);
     }
 
@@ -49,18 +42,18 @@ public partial class UIController : CanvasLayer
 
     private void OnGameOver(GameOverEvent evt)
     {
-        _gameOverPanel.Visible = true;
-        _finalScoreLabel.Text = $"Final Score: {_currentScore}";
+        gameOverPanel.Visible = true;
+        finalScoreLabel.Text = $"Final Score: {currentScore}";
     }
 
     private void UpdateScoreDisplay(int score)
     {
-        _scoreLabel.Text = $"Score: {score}";
+        scoreLabel.Text = $"Score: {score}";
     }
 
     private void UpdateHealthDisplay(int health)
     {
-        _healthLabel.Text = $"HP: {health}/{Parameters.MaxHealth}";
+        healthLabel.Text = $"HP: {health}/{Parameters.MaxHealth}";
     }
 
     private void OnRestartPressed()
@@ -82,7 +75,7 @@ public partial class UIController : CanvasLayer
         EventCenter.RemoveListener<PlayerHealthChangedEvent>(OnPlayerHealthChanged);
         EventCenter.RemoveListener<GameOverEvent>(OnGameOver);
 
-        _restartButton.Pressed -= OnRestartPressed;
-        _menuButton.Pressed -= OnMenuPressed;
+        restartButton.Pressed -= OnRestartPressed;
+        menuButton.Pressed -= OnMenuPressed;
     }
 }

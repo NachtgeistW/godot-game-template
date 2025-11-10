@@ -3,8 +3,14 @@
 [ext_resource type="Script" uid="uid://bg5h870nmtva1" path="res://scripts/games/ui/UIController.cs" id="1_ui_script"]
 [ext_resource type="FontFile" uid="uid://dvvm72pp0fjae" path="res://fonts/ark-pixel-font-10px-monospaced-ttf-v2025.10.20/ark-pixel-10px-monospaced-zh_cn.ttf" id="2_x4jx1"]
 
-[node name="UI" type="CanvasLayer"]
+[node name="UI" type="CanvasLayer" node_paths=PackedStringArray("scoreLabel", "healthLabel", "gameOverPanel", "finalScoreLabel", "restartButton", "menuButton")]
 script = ExtResource("1_ui_script")
+scoreLabel = NodePath("ScoreLabel")
+healthLabel = NodePath("HealthLabel")
+gameOverPanel = NodePath("GameOverPanel")
+finalScoreLabel = NodePath("GameOverPanel/FinalScoreLabel")
+restartButton = NodePath("GameOverPanel/RestartButton")
+menuButton = NodePath("GameOverPanel/MenuButton")
 
 [node name="ScoreLabel" type="Label" parent="."]
 anchors_preset = 1
@@ -30,7 +36,6 @@ theme_override_font_sizes/font_size = 10
 text = "HP: 3/3"
 
 [node name="GameOverPanel" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

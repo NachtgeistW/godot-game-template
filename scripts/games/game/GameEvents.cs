@@ -2,9 +2,7 @@ using Plutono.Util;
 
 namespace starrynight;
 
-public struct StarCollectedEvent : IEvent
-{
-}
+public struct StarCollectedEvent : IEvent;
 
 public struct ScoreChangedEvent : IEvent
 {
@@ -30,6 +28,7 @@ public struct PlayerHealthChangedEvent : IEvent
     }
 }
 
-public struct GameOverEvent : IEvent
-{
-}
+public struct GameOverEvent : IEvent;
+public struct GameRestartEvent : IEvent;
+
+
