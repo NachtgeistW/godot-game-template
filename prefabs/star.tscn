@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d55wyyfgdlm4"]
 
 [ext_resource type="Script" uid="uid://dd76qu7i7hkw3" path="res://scripts/games/star/StarController.cs" id="1_chsll"]
-[ext_resource type="Texture2D" uid="uid://raufx1bdsgm8" path="res://arts/Star.png" id="1_o2f8k"]
+[ext_resource type="Texture2D" uid="uid://raufx1bdsgm8" path="res://arts/sprites/Star.png" id="1_o2f8k"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3g7kf"]
 

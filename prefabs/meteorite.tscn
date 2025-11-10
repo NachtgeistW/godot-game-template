@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://du2ogu62a1u6"]
+
+[ext_resource type="Texture2D" uid="uid://diesfexmweydv" path="res://arts/sprites/rocks.png" id="1_v0ahd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v0ahd"]
+radius = 12.0
+
+[node name="Area2D" type="Area2D"]
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_v0ahd")
+hframes = 3
+vframes = 2
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_v0ahd")
