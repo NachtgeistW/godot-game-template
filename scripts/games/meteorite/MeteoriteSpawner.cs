@@ -43,7 +43,7 @@ public partial class MeteoriteSpawner : Node2D
         while (cameraX + Parameters.MeteoriteSpawnDistance >= nextSpawnX)
         {
             SpawnMeteorite(nextSpawnX);
-            var randomDistance = random.Next((int)-Parameters.MeteoriteMinSpawnInterval, (int)Parameters.MeteoriteMinSpawnInterval);
+            var randomDistance = random.Next((int)-Parameters.MeteoriteSpawnDistance, (int)Parameters.MeteoriteSpawnDistance);
             nextSpawnX += currentSpawnInterval + randomDistance;
         }
 

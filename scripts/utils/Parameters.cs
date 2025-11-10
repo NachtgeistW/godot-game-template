@@ -13,9 +13,9 @@ public static class Parameters
     public const float StarSpawnInterval = 400f;
 
     // Meteorite Generation
-    public const float MeteoriteSpawnDistance = 800f;
+    public const float MeteoriteSpawnDistance = 1000f;
     public const float MeteoriteDespawnDistance = 200f;
-    public const float MeteoriteInitialSpawnInterval = 600f;
+    public const float MeteoriteInitialSpawnInterval = 500f;
     public const float MeteoriteMinSpawnInterval = 100f;
     public const float MeteoriteDifficultyIncreaseTime = 30f; // seconds
 
