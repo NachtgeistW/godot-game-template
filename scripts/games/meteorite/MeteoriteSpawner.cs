@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using Plutono.Scripts.Utils;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ public partial class MeteoriteSpawner : Node2D
 
     private float elapsedTime;
     private float currentSpawnInterval;
+    
+    private Random random;
 
     public override void _Ready()
     {
@@ -26,6 +29,8 @@ public partial class MeteoriteSpawner : Node2D
         currentSpawnInterval = Parameters.MeteoriteInitialSpawnInterval;
         nextSpawnX = camera.GlobalPosition.X + Parameters.MeteoriteSpawnDistance;
         elapsedTime = 0f;
+        
+        random = new Random();
     }
 
     public override void _Process(double delta)
@@ -38,7 +43,8 @@ public partial class MeteoriteSpawner : Node2D
         while (cameraX + Parameters.MeteoriteSpawnDistance >= nextSpawnX)
         {
             SpawnMeteorite(nextSpawnX);
-            nextSpawnX += currentSpawnInterval;
+            var randomDistance = random.Next((int)-Parameters.MeteoriteMinSpawnInterval, (int)Parameters.MeteoriteMinSpawnInterval);
+            nextSpawnX += currentSpawnInterval + randomDistance;
         }
 
         DespawnDistantMeteorites(cameraX);
