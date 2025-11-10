@@ -1,5 +1,7 @@
 using Godot;
 using Plutono.Scripts.Utils;
+using Plutono.Util;
+using starrynight;
 
 namespace starrynight.scripts.games;
 
@@ -18,12 +20,39 @@ public partial class PlayerController : CharacterBody2D
     [Export] public float Acceleration = 1f;
     private float currentSpeed;
 
+    private int currentHealth;
+
     public override void _Ready()
     {
         _targetPosition = GlobalPosition;
         _platform = OsDetector.Platform;
 
         currentSpeed = InitialSpeed;
+        currentHealth = Parameters.MaxHealth;
+
+        EventCenter.AddListener<MeteoriteHitEvent>(OnMeteoriteHit);
+        EventCenter.Broadcast(new PlayerHealthChangedEvent(currentHealth));
+    }
+
+    private void OnMeteoriteHit(MeteoriteHitEvent evt)
+    {
+        TakeDamage(Parameters.MeteoriteDamage);
+    }
+
+    private void TakeDamage(int damage)
+    {
+        currentHealth = Mathf.Max(0, currentHealth - damage);
+        EventCenter.Broadcast(new PlayerHealthChangedEvent(currentHealth));
+
+        if (currentHealth <= 0)
+        {
+            EventCenter.Broadcast(new GameOverEvent());
+        }
+    }
+
+    public override void _ExitTree()
+    {
+        EventCenter.RemoveListener<MeteoriteHitEvent>(OnMeteoriteHit);
     }
 
     public override void _Process(double delta)

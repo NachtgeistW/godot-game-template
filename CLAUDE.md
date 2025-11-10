@@ -108,4 +108,4 @@ scripts/
 - Debug logging should use the `Debug` class wrapper, not `GD` directly
 - Platform detection should use `OsDetector.Platform`, not direct OS calls
 - Use `var` as much as possible
-- Write commit as less as possible expectd for it's necessary as the code should clear enought to explains itself
+- Write commit as less as possible expected for it's necessary as the code should clear enough to explains itself

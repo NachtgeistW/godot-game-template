@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://csayn5nmb4hhh" path="res://scripts/games/game/GameManager.cs" id="6_kvuet"]
 [ext_resource type="Script" uid="uid://cogfcjl1h1kgn" path="res://scripts/games/star/StarSpawner.cs" id="7_trtic"]
 [ext_resource type="PackedScene" uid="uid://b4vu1vx8g5up8" path="res://scenes/ui.tscn" id="8_ir15t"]
-[ext_resource type="PackedScene" uid="uid://du2ogu62a1u6" path="res://prefabs/meteorite.tscn" id="9_0tnpc"]
+[ext_resource type="Script" uid="uid://drr1bnp6br4pk" path="res://scripts/games/meteorite/MeteoriteSpawner.cs" id="9_trtic"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -68,7 +68,8 @@ script = ExtResource("6_kvuet")
 script = ExtResource("7_trtic")
 CameraPath = NodePath("../Player/Camera2D")
 
-[node name="UI" parent="." instance=ExtResource("8_ir15t")]
+[node name="MeteoriteSpawner" type="Node2D" parent="."]
+script = ExtResource("9_trtic")
+CameraPath = NodePath("../Player/Camera2D")
 
-[node name="meteorite" parent="." instance=ExtResource("9_0tnpc")]
-position = Vector2(288.99997, 31.999998)
+[node name="UI" parent="." instance=ExtResource("8_ir15t")]

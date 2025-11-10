@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://du2ogu62a1u6"]
+[gd_scene load_steps=4 format=3 uid="uid://du2ogu62a1u6"]
 
 [ext_resource type="Texture2D" uid="uid://diesfexmweydv" path="res://arts/sprites/rocks.png" id="1_v0ahd"]
+[ext_resource type="Script" path="res://scripts/games/meteorite/MeteoriteController.cs" id="2_v0ahd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v0ahd"]
 radius = 12.0
 
 [node name="Area2D" type="Area2D"]
+script = ExtResource("2_v0ahd")
 scale = Vector2(0.35, 0.35)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

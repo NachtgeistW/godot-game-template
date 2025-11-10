@@ -15,3 +15,21 @@ public struct ScoreChangedEvent : IEvent
         Score = score;
     }
 }
+
+public struct MeteoriteHitEvent : IEvent
+{
+}
+
+public struct PlayerHealthChangedEvent : IEvent
+{
+    public int CurrentHealth { get; init; }
+
+    public PlayerHealthChangedEvent(int currentHealth)
+    {
+        CurrentHealth = currentHealth;
+    }
+}
+
+public struct GameOverEvent : IEvent
+{
+}
