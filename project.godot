@@ -10,10 +10,11 @@ config_version=5
 
 [application]
 
-config/name="Starry Night"
+config/name="Starfall Night"
 config/name_localized={
-"zh_CN": "繁星降落的夜晚"
+"zh_CN": "繁星坠落的夜晚"
 }
+config/version="0.0.1"
 run/main_scene="uid://d4fuuhpybpvnp"
 config/features=PackedStringArray("4.5", "C#", "Mobile")
 config/icon="res://icon.svg"

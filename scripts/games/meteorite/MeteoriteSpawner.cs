@@ -65,6 +65,10 @@ public partial class MeteoriteSpawner : Node2D
         var meteoritePosition = generator.GenerateStarPosition(xPosition);
         var meteorite = meteoritePrefab.Instantiate<Node2D>();
         meteorite.GlobalPosition = meteoritePosition;
+
+        var sprite2D = meteorite.GetNode<Sprite2D>("Sprite2D");
+        sprite2D.Frame = random.Next(0, 5);
+        
         GetParent().AddChild(meteorite);
         activeMeteorites.Add(meteorite);
     }
