@@ -22,6 +22,7 @@ public partial class UIController : CanvasLayer
         EventCenter.AddListener<GameOverEvent>(OnGameOver);
 
         gameOverPanel.Visible = false;
+
         UpdateScoreDisplay(0);
         UpdateHealthDisplay(Parameters.MaxHealth);
 

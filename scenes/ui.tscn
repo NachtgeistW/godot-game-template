@@ -36,6 +36,7 @@ theme_override_font_sizes/font_size = 10
 text = "HP: 3/3"
 
 [node name="GameOverPanel" type="Control" parent="."]
+process_mode = 2
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

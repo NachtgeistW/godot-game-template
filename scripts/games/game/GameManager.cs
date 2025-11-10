@@ -13,7 +13,6 @@ public partial class GameManager : Node
     {
         EventCenter.AddListener<StarCollectedEvent>(OnStarCollected);
         EventCenter.AddListener<GameOverEvent>(OnGameOver);
-        EventCenter.AddListener<GameRestartEvent>(OnGameRestart);
     }
 
     private void OnStarCollected(StarCollectedEvent evt)
@@ -29,17 +28,10 @@ public partial class GameManager : Node
         _isGameOver = true;
         GetTree().Paused = true;
     }
-    
-    private void OnGameRestart(GameRestartEvent evt)
-    {
-        GetTree().Paused = false;
-        GetTree().ReloadCurrentScene();
-    }
 
     public override void _ExitTree()
     {
         EventCenter.RemoveListener<StarCollectedEvent>(OnStarCollected);
         EventCenter.RemoveListener<GameOverEvent>(OnGameOver);
-        EventCenter.RemoveListener<GameRestartEvent>(OnGameRestart);
     }
 }
