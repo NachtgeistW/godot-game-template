@@ -6,7 +6,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_v0ahd"]
 radius = 12.0
 
-[node name="Area2D" type="Area2D"]
+[node name="Meteorite" type="Area2D"]
 scale = Vector2(0.35, 0.35)
 script = ExtResource("2_v0ahd")
 

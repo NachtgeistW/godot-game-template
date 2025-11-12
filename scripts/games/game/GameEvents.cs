@@ -31,4 +31,16 @@ public struct PlayerHealthChangedEvent : IEvent
 public struct GameOverEvent : IEvent;
 public struct GameRestartEvent : IEvent;
 
+public struct BeatHitEvent : IEvent
+{
+    public int BeatNumber { get; init; }
+    public float ExactBeat { get; init; }
+
+    public BeatHitEvent(int beatNumber, float exactBeat)
+    {
+        BeatNumber = beatNumber;
+        ExactBeat = exactBeat;
+    }
+}
+
 

@@ -20,6 +20,11 @@ public partial class PlayerController : CharacterBody2D
     [Export] public float Acceleration = 1f;
     private float currentSpeed;
 
+    /// <summary>
+    /// Current forward speed of the player
+    /// </summary>
+    public float CurrentSpeed => currentSpeed;
+
     private int currentHealth;
 
     public override void _Ready()

@@ -50,7 +50,6 @@ namespace Plutono.Util
             {
                 (item as Action<T>)?.Invoke(@event);
             }
-            Debug.Log($"Broadcast {typeof(T)}");
         }
     }
 }

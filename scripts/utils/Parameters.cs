@@ -22,4 +22,13 @@ public static class Parameters
     // Player Health
     public const int MaxHealth = 3;
     public const int MeteoriteDamage = 1;
+
+    // Beat-Based Star Generation
+    public const float FFTAmplitudeScale = 90f; // Scale FFT amplitude to Y position range
+    public const float FFTThreshold = 0.05f; // Minimum FFT amplitude to spawn star
+    public const float FFTYRandomRange = 20f; // Random offset range for Y position (±)
+    public const float BeatSyncTolerance = 0.01f; // Tolerance for beat detection (seconds)
+
+    // Star-Meteorite Spacing
+    public const float MinStarMeteoriteDistance = 250f; // Minimum X distance between star and meteorite
 }

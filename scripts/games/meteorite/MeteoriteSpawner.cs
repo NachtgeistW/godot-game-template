@@ -8,8 +8,10 @@ namespace starrynight;
 public partial class MeteoriteSpawner : Node2D
 {
     [Export] public NodePath CameraPath { get; set; }
+    [Export] public NodePath StarSpawnerPath { get; set; }
 
     private Camera2D camera;
+    private StarSpawner starSpawner;
     private IStarGenerator generator;
     private PackedScene meteoritePrefab;
     private float nextSpawnX;
@@ -17,20 +19,23 @@ public partial class MeteoriteSpawner : Node2D
 
     private float elapsedTime;
     private float currentSpawnInterval;
-    
+
     private Random random;
 
     public override void _Ready()
     {
         camera = GetNode<Camera2D>(CameraPath);
+        starSpawner = GetNode<StarSpawner>(StarSpawnerPath);
         generator = new RandomStarGenerator();
         meteoritePrefab = GD.Load<PackedScene>("res://prefabs/meteorite.tscn");
 
         currentSpawnInterval = Parameters.MeteoriteInitialSpawnInterval;
         nextSpawnX = camera.GlobalPosition.X + Parameters.MeteoriteSpawnDistance;
         elapsedTime = 0f;
-        
+
         random = new Random();
+
+        Debug.Log("MeteoriteSpawner initialized with star collision avoidance");
     }
 
     public override void _Process(double delta)
@@ -42,6 +47,14 @@ public partial class MeteoriteSpawner : Node2D
 
         while (cameraX + Parameters.MeteoriteSpawnDistance >= nextSpawnX)
         {
+            // Check for star collision before spawning
+            if (starSpawner != null && starSpawner.IsPositionNearStar(nextSpawnX))
+            {
+                // Too close to a star, delay spawn
+                nextSpawnX += Parameters.MinStarMeteoriteDistance * 0.5f;
+                continue;
+            }
+
             SpawnMeteorite(nextSpawnX);
             var randomDistance = random.Next((int)-Parameters.MeteoriteSpawnDistance, (int)Parameters.MeteoriteSpawnDistance);
             nextSpawnX += currentSpawnInterval + randomDistance;
