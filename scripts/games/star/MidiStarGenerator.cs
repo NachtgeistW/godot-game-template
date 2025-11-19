@@ -4,14 +4,10 @@ using System.Collections.Generic;
 
 namespace starrynight;
 
-/// <summary>
-/// Manages MIDI note data and provides star generation based on playback position
-/// Unlike FFT generator, this pre-loads all notes and spawns based on timing
-/// </summary>
 public class MidiStarGenerator
 {
     private readonly List<MidiNoteData> notes;
-    private readonly HashSet<int> spawnedNoteIndices = new();
+    private readonly HashSet<int> spawnedNoteIndices = [];
     private readonly RandomNumberGenerator random = new();
 
     /// <summary>
@@ -22,9 +18,6 @@ public class MidiStarGenerator
     {
         var parser = new MidiNoteParser(midiFilePath);
         notes = parser.GetNotes();
-
-        Debug.Log($"MidiStarGenerator initialized with {notes.Count} notes");
-        Debug.Log($"Duration: {parser.GetTotalDuration():F2} seconds");
     }
 
     /// <summary>
@@ -52,11 +45,9 @@ public class MidiStarGenerator
         // Spawn window: stars should appear when they're just entering the screen (130-180 relative to camera)
         const float spawnWindowMin = 130f; // Start spawning slightly before screen edge
         const float spawnWindowMax = 180f; // End spawning slightly after (off-screen)
-
-        // Find notes that should be spawned now
+        
         for (var i = 0; i < notes.Count; i++)
         {
-            // Skip already spawned notes
             if (spawnedNoteIndices.Contains(i))
             {
                 continue;

@@ -18,24 +18,23 @@ public partial class StarSpawner : Node2D
     private PackedScene starPrefab;
     private readonly List<Node2D> activeStars = [];
     private readonly List<float> recentStarXPositions = []; // For meteorite collision avoidance
+    private double lastPlaybackPosition; // Track position for loop detection
 
     public override void _Ready()
     {
         camera = GetNode<Camera2D>(CameraPath);
-        player = camera.GetParent<PlayerController>(); // Get player from camera's parent
+        player = camera.GetParent<PlayerController>();
         audioPlayer = GetNode<AudioStreamPlayer>(AudioPlayerPath);
         starPrefab = GD.Load<PackedScene>("res://prefabs/star.tscn");
-
-        // Initialize AudioAnalyzer singleton for playback position tracking
+        
         if (AudioAnalyzer.Instance == null)
         {
             var analyzer = new AudioAnalyzer();
             AddChild(analyzer);
         }
 
-        AudioAnalyzer.Instance.Initialize(audioPlayer);
-
-        // Initialize MIDI generator
+        AudioAnalyzer.Instance?.Initialize(audioPlayer);
+        
         midiGenerator = new MidiStarGenerator(MidiFilePath);
 
         Debug.Log($"StarSpawner initialized with MIDI generation from {MidiFilePath}");
@@ -44,10 +43,7 @@ public partial class StarSpawner : Node2D
     public override void _Process(double delta)
     {
         var cameraX = camera.GlobalPosition.X;
-
-        // Process MIDI-based star spawning
         ProcessMidiSpawning(cameraX);
-
         DespawnDistantStars(cameraX);
         CleanupOldStarPositions(cameraX);
     }
@@ -69,8 +65,16 @@ public partial class StarSpawner : Node2D
             return;
         }
 
-        // Get current playback position
         var currentTime = analyzer.GetPlaybackPosition() + AudioServer.GetTimeSinceLastMix() - AudioServer.GetOutputLatency();
+
+        // Detect audio loop: if playback position jumps backward by >1 second, reset generator
+        if (currentTime < lastPlaybackPosition - 1f)
+        {
+            Debug.Log($"StarSpawner: Audio loop detected (position: {currentTime:F2}s), resetting MIDI generator");
+            midiGenerator.Reset();
+        }
+        lastPlaybackPosition = currentTime;
+
         var currentSpeed = player.CurrentSpeed;
 
         if (currentSpeed <= 0)
@@ -86,8 +90,7 @@ public partial class StarSpawner : Node2D
             player.GlobalPosition.X,
             cameraX
         );
-
-        // Spawn all stars
+        
         foreach (var starPosition in starsToSpawn)
         {
             SpawnStarAtPosition(starPosition);
