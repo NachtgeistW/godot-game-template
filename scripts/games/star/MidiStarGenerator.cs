@@ -1,0 +1,120 @@
+using Godot;
+using Plutono.Scripts.Utils;
+using System.Collections.Generic;
+
+namespace starrynight;
+
+/// <summary>
+/// Manages MIDI note data and provides star generation based on playback position
+/// Unlike FFT generator, this pre-loads all notes and spawns based on timing
+/// </summary>
+public class MidiStarGenerator
+{
+    private readonly List<MidiNoteData> notes;
+    private readonly HashSet<int> spawnedNoteIndices = new();
+    private readonly RandomNumberGenerator random = new();
+
+    /// <summary>
+    /// Create MIDI star generator from parsed MIDI file
+    /// </summary>
+    /// <param name="midiFilePath">Path to MIDI file (res:// path)</param>
+    public MidiStarGenerator(string midiFilePath)
+    {
+        var parser = new MidiNoteParser(midiFilePath);
+        notes = parser.GetNotes();
+
+        Debug.Log($"MidiStarGenerator initialized with {notes.Count} notes");
+        Debug.Log($"Duration: {parser.GetTotalDuration():F2} seconds");
+    }
+
+    /// <summary>
+    /// Get notes that should be spawned now based on current playback position and player state
+    /// </summary>
+    /// <param name="currentTime">Current playback position in seconds</param>
+    /// <param name="playerSpeed">Current player speed (units per second)</param>
+    /// <param name="spawnXPosition">X position where stars should spawn</param>
+    /// <param name="playerXPosition">Current player X position</param>
+    /// <returns>List of positions where stars should spawn</returns>
+    public List<Vector2> GetStarsToSpawn(
+        double currentTime,
+        float playerSpeed,
+        float spawnXPosition,
+        float playerXPosition)
+    {
+        var starsToSpawn = new List<Vector2>();
+
+        if (playerSpeed <= 0)
+        {
+            return starsToSpawn;
+        }
+
+        // Calculate how far ahead we need to look based on travel distance
+        var travelDistance = spawnXPosition - playerXPosition;
+        var travelTime = travelDistance / playerSpeed;
+        var lookAheadTime = currentTime + travelTime;
+
+        // Find notes that should be spawned now
+        for (var i = 0; i < notes.Count; i++)
+        {
+            // Skip already spawned notes
+            if (spawnedNoteIndices.Contains(i))
+            {
+                continue;
+            }
+
+            var note = notes[i];
+
+            // Check if this note should be spawned now
+            // We spawn when: currentTime + travelTime >= noteTime
+            // With a small tolerance window to avoid missing notes
+            var timeDifference = note.TimeInSeconds - lookAheadTime;
+
+            // Spawn window: slightly before to slightly after the exact time
+            const double spawnWindow = 0.05; // 50ms window
+
+            if (timeDifference is <= spawnWindow and >= -spawnWindow)
+            {
+                // Generate random Y position
+                var yPosition = random.RandfRange(Parameters.MinStarHeight, Parameters.MaxStarHeight);
+                var starPosition = new Vector2(spawnXPosition, yPosition);
+
+                starsToSpawn.Add(starPosition);
+                spawnedNoteIndices.Add(i);
+
+                Debug.Log($"Spawning star for note at {note.TimeInSeconds:F3}s (pitch={note.Pitch}, " +
+                          $"current={currentTime:F3}s, lookAhead={lookAheadTime:F3}s)");
+            }
+            // If we're past the spawn window, mark as missed
+            else if (timeDifference < -spawnWindow)
+            {
+                if (!spawnedNoteIndices.Contains(i))
+                {
+                    Debug.LogWarning($"Missed note at {note.TimeInSeconds:F3}s " +
+                                   $"(current={currentTime:F3}s, lookAhead={lookAheadTime:F3}s)");
+                    spawnedNoteIndices.Add(i); // Mark as processed to avoid repeated warnings
+                }
+            }
+        }
+
+        return starsToSpawn;
+    }
+
+    /// <summary>
+    /// Reset spawned notes tracking (for looping or restart)
+    /// </summary>
+    public void Reset()
+    {
+        spawnedNoteIndices.Clear();
+        Debug.Log("MidiStarGenerator reset");
+    }
+
+    /// <summary>
+    /// Get total number of notes
+    /// </summary>
+    public int GetNoteCount() => notes.Count;
+
+    /// <summary>
+    /// Get number of spawned notes
+    /// </summary>
+    public int GetSpawnedCount() => spawnedNoteIndices.Count;
+}

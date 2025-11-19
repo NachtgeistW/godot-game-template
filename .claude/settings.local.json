@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:docs.godotengine.org)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(dotnet build:*)"
     ],
     "deny": [],
     "ask": []

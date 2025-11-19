@@ -11,7 +11,7 @@ public partial class AudioAnalyzer : Node
     private static AudioAnalyzer instance;
     public static AudioAnalyzer Instance => instance;
 
-    private AudioStreamPlayer2D audioPlayer;
+    private AudioStreamPlayer audioPlayer;
     private AudioEffectSpectrumAnalyzer spectrumAnalyzer;
     private int audioBusIndex;
 
@@ -42,7 +42,7 @@ public partial class AudioAnalyzer : Node
     /// <summary>
     /// Initialize the audio analyzer with the game's audio player
     /// </summary>
-    public void Initialize(AudioStreamPlayer2D player)
+    public void Initialize(AudioStreamPlayer player)
     {
         audioPlayer = player;
 

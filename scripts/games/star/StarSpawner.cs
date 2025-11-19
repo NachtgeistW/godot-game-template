@@ -1,6 +1,5 @@
 using Godot;
 using Plutono.Scripts.Utils;
-using Plutono.Util;
 using starrynight.scripts.games;
 using System.Collections.Generic;
 
@@ -10,134 +9,108 @@ public partial class StarSpawner : Node2D
 {
     [Export] public NodePath CameraPath { get; set; }
     [Export] public NodePath AudioPlayerPath { get; set; }
-    [Export] public FrequencyBand FrequencyBand { get; set; } = FrequencyBand.MidRange;
+    [Export] public string MidiFilePath { get; set; }
 
     private Camera2D camera;
     private PlayerController player;
-    private AudioStreamPlayer2D audioPlayer;
-    private IStarGenerator generator;
+    private AudioStreamPlayer audioPlayer;
+    private MidiStarGenerator midiGenerator;
     private PackedScene starPrefab;
     private readonly List<Node2D> activeStars = [];
     private readonly List<float> recentStarXPositions = []; // For meteorite collision avoidance
+
+    // Star spawn position (screen edge, just out of view)
+    private const float StarSpawnXOffset = 158f; // Screen width/2 + star width/2 (288/2 + 14/2)
 
     public override void _Ready()
     {
         camera = GetNode<Camera2D>(CameraPath);
         player = camera.GetParent<PlayerController>(); // Get player from camera's parent
-        audioPlayer = GetNode<AudioStreamPlayer2D>(AudioPlayerPath);
+        audioPlayer = GetNode<AudioStreamPlayer>(AudioPlayerPath);
         starPrefab = GD.Load<PackedScene>("res://prefabs/star.tscn");
 
-        // Initialize AudioAnalyzer singleton
+        // Initialize AudioAnalyzer singleton for playback position tracking
         if (AudioAnalyzer.Instance == null)
         {
             var analyzer = new AudioAnalyzer();
             AddChild(analyzer);
         }
+
         AudioAnalyzer.Instance.Initialize(audioPlayer);
 
-        // Create FFT-based generator for Y positions
-        generator = new FFTStarGenerator(FrequencyBand);
+        // Initialize MIDI generator
+        midiGenerator = new MidiStarGenerator(MidiFilePath);
 
-        // Subscribe to beat events
-        EventCenter.AddListener<BeatHitEvent>(OnBeatHit);
-
-        Debug.Log($"StarSpawner initialized with predictive beat spawning, FFT band: {FrequencyBand}");
-    }
-
-    public override void _ExitTree()
-    {
-        // Unsubscribe from beat events
-        EventCenter.RemoveListener<BeatHitEvent>(OnBeatHit);
+        Debug.Log($"StarSpawner initialized with MIDI generation from {MidiFilePath}");
     }
 
     public override void _Process(double delta)
     {
         var cameraX = camera.GlobalPosition.X;
 
-        // Handle despawning only (spawning is done in OnBeatHit)
+        // Process MIDI-based star spawning
+        ProcessMidiSpawning(cameraX);
+
         DespawnDistantStars(cameraX);
         CleanupOldStarPositions(cameraX);
     }
 
     /// <summary>
-    /// Event handler for beat hits - spawns stars predictively for rhythm game synchronization
-    /// Stars are spawned now but will be reached by player at a future beat
+    /// Process MIDI notes and spawn stars based on current playback position
     /// </summary>
-    private void OnBeatHit(BeatHitEvent beatEvent)
+    private void ProcessMidiSpawning(float cameraX)
     {
-        var analyzer = AudioAnalyzer.Instance;
-        if (analyzer == null || player == null)
+        if (midiGenerator == null || player == null)
         {
             return;
         }
 
-        // Calculate time for player to reach spawn position
+        var analyzer = AudioAnalyzer.Instance;
+        if (analyzer == null || !analyzer.IsPlaying())
+        {
+            return;
+        }
+
+        // Get current playback position
+        var currentTime = analyzer.GetPlaybackPosition();
         var currentSpeed = player.CurrentSpeed;
+
         if (currentSpeed <= 0)
         {
             return;
         }
 
-        var timeToReach = Parameters.StarSpawnDistance / currentSpeed;
+        // Calculate spawn X position (fixed offset from camera)
+        var spawnX = cameraX + StarSpawnXOffset;
 
-        // Calculate which future beat the player will be at when reaching this star
-        var bpm = analyzer.GetBpm();
-        if (bpm <= 0)
+        // Get stars that should spawn now from MIDI generator
+        var starsToSpawn = midiGenerator.GetStarsToSpawn(
+            currentTime,
+            currentSpeed,
+            spawnX,
+            player.GlobalPosition.X
+        );
+
+        // Spawn all stars
+        foreach (var starPosition in starsToSpawn)
         {
-            Debug.LogWarning("StarSpawner: BPM not configured! Cannot calculate future beat.");
-            return;
-        }
-
-        var beatsAhead = (timeToReach * bpm) / 60f;
-        var futureBeat = beatEvent.BeatNumber + beatsAhead;
-
-        // Check FFT at current time to gate spawning
-        var fftValue = analyzer.GetFFTValue(FrequencyBand);
-
-        // Skip spawning if music is silent (below threshold)
-        if (fftValue < Parameters.FFTThreshold)
-        {
-            // Log every 8th beat to avoid spam
-            if (beatEvent.BeatNumber % 8 == 0)
-            {
-                Debug.Log($"StarSpawner: Beat {beatEvent.BeatNumber} - Skipping spawn (FFT={fftValue:F3} < threshold, silent section)");
-            }
-            return;
-        }
-
-        // Calculate spawn position ahead of camera
-        var cameraX = camera.GlobalPosition.X;
-        //var spawnX = cameraX + Parameters.StarSpawnDistance;
-        //TODO
-        var spawnX = cameraX;
-
-        // Spawn star - it will be reached at the calculated future beat
-        SpawnStar(spawnX);
-
-        // Log spawn decision (every 8th beat to reduce spam)
-        if (beatEvent.BeatNumber % 8 == 0)
-        {
-            Debug.Log($"StarSpawner: Beat {beatEvent.BeatNumber} - Spawning star (FFT={fftValue:F3}, speed={currentSpeed:F1}, timeToReach={timeToReach:F2}s, futureBeat={futureBeat:F1})");
+            SpawnStarAtPosition(starPosition);
         }
     }
 
-    private void SpawnStar(float xPosition)
+    /// <summary>
+    /// Spawn a star at the given position
+    /// </summary>
+    private void SpawnStarAtPosition(Vector2 position)
     {
-        var starPosition = generator.GenerateStarPosition(xPosition);
-
-        // Skip if position is out of bounds (indicates FFT below threshold)
-        if (starPosition.Y is > Parameters.MaxStarHeight or < Parameters.MinStarHeight)
-        {
-            return;
-        }
-
         var star = starPrefab.Instantiate<Node2D>();
-        star.GlobalPosition = starPosition;
+        star.GlobalPosition = position;
+
         GetParent().AddChild(star);
         activeStars.Add(star);
 
         // Track X position for meteorite collision avoidance
-        recentStarXPositions.Add(xPosition);
+        recentStarXPositions.Add(position.X);
     }
 
     private void DespawnDistantStars(float cameraX)
@@ -178,6 +151,7 @@ public partial class StarSpawner : Node2D
                 return true;
             }
         }
+
         return false;
     }
 }

@@ -11,4 +11,7 @@
   <ItemGroup>
     <EmbeddedResource Remove="android\**" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Melanchall.DryWetMidi" Version="7.2.0" />
+  </ItemGroup>
 </Project>
