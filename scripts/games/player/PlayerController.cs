@@ -18,12 +18,11 @@ public partial class PlayerController : CharacterBody2D
     [Export] public float InitialSpeed = 150f;
     [Export] public float MaxSpeed = 300f;
     [Export] public float Acceleration = 1f;
-    private float currentSpeed;
 
     /// <summary>
     /// Current forward speed of the player
     /// </summary>
-    public float CurrentSpeed => currentSpeed;
+    public float CurrentSpeed { get; private set; }
 
     private int currentHealth;
 
@@ -32,7 +31,7 @@ public partial class PlayerController : CharacterBody2D
         _targetPosition = GlobalPosition;
         _platform = OsDetector.Platform;
 
-        currentSpeed = InitialSpeed;
+        CurrentSpeed = InitialSpeed;
         currentHealth = Parameters.MaxHealth;
 
         EventCenter.AddListener<MeteoriteHitEvent>(OnMeteoriteHit);
@@ -67,7 +66,7 @@ public partial class PlayerController : CharacterBody2D
             UpdateTargetPositionOnPc();
         }
 
-        IncreaseSpeed();
+        //IncreaseSpeed();
         UpdatePlayerPosition();
         
         return;
@@ -84,10 +83,10 @@ public partial class PlayerController : CharacterBody2D
 
         void IncreaseSpeed()
         {
-            if (currentSpeed < MaxSpeed)
+            if (CurrentSpeed < MaxSpeed)
             {
-                currentSpeed += Acceleration * (float)delta;
-                currentSpeed = Mathf.Min(currentSpeed, MaxSpeed);
+                CurrentSpeed += Acceleration * (float)delta;
+                CurrentSpeed = Mathf.Min(CurrentSpeed, MaxSpeed);
             }
         }
 
@@ -104,7 +103,7 @@ public partial class PlayerController : CharacterBody2D
 
             void IncreaseXAxisSpeed()
             {
-                GlobalPosition += new Vector2(currentSpeed * (float)delta, 0);
+                GlobalPosition += new Vector2(CurrentSpeed * (float)delta, 0);
             }
         }
     }

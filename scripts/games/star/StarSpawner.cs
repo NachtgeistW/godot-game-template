@@ -19,9 +19,6 @@ public partial class StarSpawner : Node2D
     private readonly List<Node2D> activeStars = [];
     private readonly List<float> recentStarXPositions = []; // For meteorite collision avoidance
 
-    // Star spawn position (screen edge, just out of view)
-    private const float StarSpawnXOffset = 158f; // Screen width/2 + star width/2 (288/2 + 14/2)
-
     public override void _Ready()
     {
         camera = GetNode<Camera2D>(CameraPath);
@@ -57,6 +54,7 @@ public partial class StarSpawner : Node2D
 
     /// <summary>
     /// Process MIDI notes and spawn stars based on current playback position
+    /// Stars are positioned dynamically so player reaches them exactly at note timestamp
     /// </summary>
     private void ProcessMidiSpawning(float cameraX)
     {
@@ -72,7 +70,7 @@ public partial class StarSpawner : Node2D
         }
 
         // Get current playback position
-        var currentTime = analyzer.GetPlaybackPosition();
+        var currentTime = analyzer.GetPlaybackPosition() + AudioServer.GetTimeSinceLastMix() - AudioServer.GetOutputLatency();
         var currentSpeed = player.CurrentSpeed;
 
         if (currentSpeed <= 0)
@@ -80,15 +78,13 @@ public partial class StarSpawner : Node2D
             return;
         }
 
-        // Calculate spawn X position (fixed offset from camera)
-        var spawnX = cameraX + StarSpawnXOffset;
-
         // Get stars that should spawn now from MIDI generator
+        // Stars are positioned based on: playerPosition + speed × (noteTime - currentTime)
         var starsToSpawn = midiGenerator.GetStarsToSpawn(
             currentTime,
             currentSpeed,
-            spawnX,
-            player.GlobalPosition.X
+            player.GlobalPosition.X,
+            cameraX
         );
 
         // Spawn all stars

@@ -10,18 +10,11 @@ namespace starrynight;
 /// <summary>
 /// Represents a parsed MIDI note with timing information
 /// </summary>
-public struct MidiNoteData
+public struct MidiNoteData(double time, int pitch, double duration)
 {
-    public double TimeInSeconds;
-    public int Pitch;
-    public double DurationInSeconds;
-
-    public MidiNoteData(double time, int pitch, double duration)
-    {
-        TimeInSeconds = time;
-        Pitch = pitch;
-        DurationInSeconds = duration;
-    }
+    public readonly double TimeInSeconds = time;
+    public readonly int Pitch = pitch;
+    public readonly double DurationInSeconds = duration;
 }
 
 /// <summary>
@@ -39,17 +32,11 @@ public class MidiNoteParser
     /// <param name="midiFilePath">Path to MIDI file (Godot res:// path)</param>
     public MidiNoteParser(string midiFilePath)
     {
-        Debug.Log($"Parsing MIDI file: {midiFilePath}");
-
-        // Convert Godot path to absolute path
         var absolutePath = ProjectSettings.GlobalizePath(midiFilePath);
-        Debug.Log($"Absolute path: {absolutePath}");
 
         // Read and parse MIDI file
         var midiFile = MidiFile.Read(absolutePath);
         tempoMap = midiFile.GetTempoMap();
-
-        // Extract notes from all tracks
         var allNotes = midiFile.GetNotes();
         Debug.Log($"Total notes found: {allNotes.Count}");
 
@@ -59,24 +46,25 @@ public class MidiNoteParser
 
         Debug.Log($"Quarter note duration: {quarterNoteDuration:F3}s");
         Debug.Log($"Eighth note duration (filter threshold): {eighthNoteDuration:F3}s");
-
+        
         // Convert notes to our data structure and filter
         var filteredCount = 0;
         foreach (var note in allNotes)
         {
             var timeSpan = note.TimeAs<MetricTimeSpan>(tempoMap);
             var timeInSeconds = timeSpan.TotalMicroseconds / 1_000_000.0;
-
+        
             var lengthSpan = note.LengthAs<MetricTimeSpan>(tempoMap);
             var durationInSeconds = lengthSpan.TotalMicroseconds / 1_000_000.0;
-
+        
             // Filter: only keep notes with duration <= 1/8 note
-            if (durationInSeconds <= eighthNoteDuration)
-            {
+            //if (durationInSeconds <= eighthNoteDuration)
+            //{
                 notes.Add(new MidiNoteData(timeInSeconds, note.NoteNumber, durationInSeconds));
-                filteredCount++;
-            }
+                //filteredCount++;
+            //}
         }
+        filteredCount = allNotes.Count;
 
         // Sort by time
         notes.Sort((a, b) => a.TimeInSeconds.CompareTo(b.TimeInSeconds));

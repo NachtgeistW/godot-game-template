@@ -59,6 +59,7 @@ limit_bottom = 90
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("5_gee14")
 autoplay = true
+parameters/looping = true
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("6_kvuet")

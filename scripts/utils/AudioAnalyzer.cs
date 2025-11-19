@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using Plutono.Util;
+using starrynight;
 
 namespace Plutono.Scripts.Utils;
 
@@ -8,8 +10,7 @@ namespace Plutono.Scripts.Utils;
 /// </summary>
 public partial class AudioAnalyzer : Node
 {
-    private static AudioAnalyzer instance;
-    public static AudioAnalyzer Instance => instance;
+    public static AudioAnalyzer Instance { get; private set; }
 
     private AudioStreamPlayer audioPlayer;
     private AudioEffectSpectrumAnalyzer spectrumAnalyzer;
@@ -23,20 +24,29 @@ public partial class AudioAnalyzer : Node
 
     public override void _EnterTree()
     {
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             QueueFree();
             return;
         }
-        instance = this;
+        Instance = this;
+        
+        EventCenter.AddListener<StarCollectedEvent>(OnStarCollected);
+    }
+
+    private void OnStarCollected(StarCollectedEvent obj)
+    {
+        Debug.Log($"AudioAnalyzer: {audioPlayer.GetPlaybackPosition()}");
     }
 
     public override void _ExitTree()
     {
-        if (instance == this)
+        if (Instance == this)
         {
-            instance = null;
+            Instance = null;
         }
+        
+        EventCenter.RemoveListener<StarCollectedEvent>(OnStarCollected);
     }
 
     /// <summary>
@@ -126,12 +136,12 @@ public partial class AudioAnalyzer : Node
     /// </summary>
     public float GetPlaybackPosition()
     {
-        if (audioPlayer == null || !audioPlayer.Playing)
+        if (audioPlayer is not { Playing: true })
         {
             return 0f;
         }
 
-        return (float)audioPlayer.GetPlaybackPosition();
+        return audioPlayer.GetPlaybackPosition();
     }
 
     /// <summary>

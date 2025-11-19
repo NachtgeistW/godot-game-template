@@ -29,17 +29,18 @@ public class MidiStarGenerator
 
     /// <summary>
     /// Get notes that should be spawned now based on current playback position and player state
+    /// Stars are positioned so that player reaches them exactly at the note's timestamp
     /// </summary>
     /// <param name="currentTime">Current playback position in seconds</param>
     /// <param name="playerSpeed">Current player speed (units per second)</param>
-    /// <param name="spawnXPosition">X position where stars should spawn</param>
     /// <param name="playerXPosition">Current player X position</param>
+    /// <param name="cameraXPosition">Current camera X position</param>
     /// <returns>List of positions where stars should spawn</returns>
     public List<Vector2> GetStarsToSpawn(
         double currentTime,
         float playerSpeed,
-        float spawnXPosition,
-        float playerXPosition)
+        float playerXPosition,
+        float cameraXPosition)
     {
         var starsToSpawn = new List<Vector2>();
 
@@ -47,11 +48,10 @@ public class MidiStarGenerator
         {
             return starsToSpawn;
         }
-
-        // Calculate how far ahead we need to look based on travel distance
-        var travelDistance = spawnXPosition - playerXPosition;
-        var travelTime = travelDistance / playerSpeed;
-        var lookAheadTime = currentTime + travelTime;
+        
+        // Spawn window: stars should appear when they're just entering the screen (130-180 relative to camera)
+        const float spawnWindowMin = 130f; // Start spawning slightly before screen edge
+        const float spawnWindowMax = 180f; // End spawning slightly after (off-screen)
 
         // Find notes that should be spawned now
         for (var i = 0; i < notes.Count; i++)
@@ -63,36 +63,24 @@ public class MidiStarGenerator
             }
 
             var note = notes[i];
-
-            // Check if this note should be spawned now
-            // We spawn when: currentTime + travelTime >= noteTime
-            // With a small tolerance window to avoid missing notes
-            var timeDifference = note.TimeInSeconds - lookAheadTime;
-
-            // Spawn window: slightly before to slightly after the exact time
-            const double spawnWindow = 0.05; // 50ms window
-
-            if (timeDifference is <= spawnWindow and >= -spawnWindow)
+            var timeUntilNote = note.TimeInSeconds - currentTime;
+            if (timeUntilNote < 0)
             {
-                // Generate random Y position
+                spawnedNoteIndices.Add(i);
+                Debug.LogWarning($"Missed note at {note.TimeInSeconds:F3}s (already passed, current={currentTime:F3}s)");
+                continue;
+            }
+            
+            var idealStarX = playerXPosition + playerSpeed * (float)timeUntilNote;
+            var relativeToCamera = idealStarX - cameraXPosition;
+            if (relativeToCamera is >= spawnWindowMin and <= spawnWindowMax)
+            {
                 var yPosition = random.RandfRange(Parameters.MinStarHeight, Parameters.MaxStarHeight);
-                var starPosition = new Vector2(spawnXPosition, yPosition);
+                //var yPosition = 0;
+                var starPosition = new Vector2(idealStarX, yPosition);
 
                 starsToSpawn.Add(starPosition);
                 spawnedNoteIndices.Add(i);
-
-                Debug.Log($"Spawning star for note at {note.TimeInSeconds:F3}s (pitch={note.Pitch}, " +
-                          $"current={currentTime:F3}s, lookAhead={lookAheadTime:F3}s)");
-            }
-            // If we're past the spawn window, mark as missed
-            else if (timeDifference < -spawnWindow)
-            {
-                if (!spawnedNoteIndices.Contains(i))
-                {
-                    Debug.LogWarning($"Missed note at {note.TimeInSeconds:F3}s " +
-                                   $"(current={currentTime:F3}s, lookAhead={lookAheadTime:F3}s)");
-                    spawnedNoteIndices.Add(i); // Mark as processed to avoid repeated warnings
-                }
             }
         }
 
