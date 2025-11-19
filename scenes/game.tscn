@@ -68,7 +68,7 @@ script = ExtResource("6_kvuet")
 script = ExtResource("7_trtic")
 CameraPath = NodePath("../Player/Camera2D")
 AudioPlayerPath = NodePath("../Player/AudioStreamPlayer")
-MidiFilePath = "res://sounds/黒魔 - Chroma - 日記 - 20250914.mid"
+MidiFilePath = "res://sounds/chroma-nikki-20250914.mid"
 
 [node name="MeteoriteSpawner" type="Node2D" parent="."]
 script = ExtResource("9_trtic")

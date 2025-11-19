@@ -3,6 +3,7 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using Plutono.Scripts.Utils;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace starrynight;
@@ -32,10 +33,18 @@ public class MidiNoteParser
     /// <param name="midiFilePath">Path to MIDI file (Godot res:// path)</param>
     public MidiNoteParser(string midiFilePath)
     {
-        var absolutePath = ProjectSettings.GlobalizePath(midiFilePath);
+        using var file = Godot.FileAccess.Open(midiFilePath, Godot.FileAccess.ModeFlags.Read);
+        if (file == null)
+        {
+            var error = Godot.FileAccess.GetOpenError();
+            GD.PushError($"Failed to open MIDI file: {midiFilePath}, Error: {error}");
+            throw new System.Exception($"Failed to open MIDI file: {midiFilePath}, Error: {error}");
+        }
 
-        // Read and parse MIDI file
-        var midiFile = MidiFile.Read(absolutePath);
+        // Read file into memory and parse with DryWetMidi
+        var bytes = file.GetBuffer((long)file.GetLength());
+        using var memoryStream = new MemoryStream(bytes);
+        var midiFile = MidiFile.Read(memoryStream);
         tempoMap = midiFile.GetTempoMap();
         var allNotes = midiFile.GetNotes();
         Debug.Log($"Total notes found: {allNotes.Count}");
