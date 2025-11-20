@@ -36,6 +36,10 @@ project/assembly_name="starry-night"
 locale/locale_filter_mode=1
 locale/country_filter=["CN"]
 
+[autoload]
+
+SaveManager="*res://scripts/utils/SaveManager.cs"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

@@ -30,6 +30,7 @@ public struct PlayerHealthChangedEvent : IEvent
 
 public struct GameOverEvent : IEvent;
 public struct GameRestartEvent : IEvent;
+public struct GameSavedEvent : IEvent;
 
 public struct BeatHitEvent : IEvent
 {

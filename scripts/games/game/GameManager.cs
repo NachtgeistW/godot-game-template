@@ -6,26 +6,34 @@ namespace StarfallNight;
 
 public partial class GameManager : Node
 {
-    private int _score = 0;
-    private bool _isGameOver = false;
+    private int score = 0;
+    private int totalStars = 0;
+    private bool isGameOver = false;
 
     public override void _Ready()
     {
+        totalStars = SaveManager.Instance.LoadTotalStars();
+        score = totalStars;
+
+        EventCenter.Broadcast(new ScoreChangedEvent(score));
+
         EventCenter.AddListener<StarCollectedEvent>(OnStarCollected);
         EventCenter.AddListener<GameOverEvent>(OnGameOver);
     }
 
     private void OnStarCollected(StarCollectedEvent evt)
     {
-        if (_isGameOver) return;
+        if (isGameOver) return;
 
-        _score += Parameters.ScorePerStar;
-        EventCenter.Broadcast(new ScoreChangedEvent(_score));
+        score += Parameters.ScorePerStar;
+        EventCenter.Broadcast(new ScoreChangedEvent(score));
     }
 
     private void OnGameOver(GameOverEvent evt)
     {
-        _isGameOver = true;
+        isGameOver = true;
+        SaveManager.Instance.SaveTotalStars(score);
+        EventCenter.Broadcast(new GameSavedEvent());
         GetTree().Paused = true;
     }
 

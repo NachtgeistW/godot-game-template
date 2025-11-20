@@ -109,3 +109,4 @@ scripts/
 - Platform detection should use `OsDetector.Platform`, not direct OS calls
 - Use `var` as much as possible
 - Don't write commit, expected that it's necessary, as the code should clear enough to explains itself
+- Don't write too much debug log
