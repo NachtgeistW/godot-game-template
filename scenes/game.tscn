@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://d4fuuhpybpvnp"]
+[gd_scene load_steps=12 format=3 uid="uid://d4fuuhpybpvnp"]
 
 [ext_resource type="Texture2D" uid="uid://5lutb4xk87me" path="res://arts/sprites/background/stringstar fields/background_0.png" id="1_gee14"]
 [ext_resource type="Texture2D" uid="uid://dfx7f4iqxintr" path="res://arts/sprites/background/stringstar fields/background_1.png" id="2_0tnpc"]
@@ -8,7 +8,9 @@
 [ext_resource type="Script" uid="uid://csayn5nmb4hhh" path="res://scripts/games/game/GameManager.cs" id="6_kvuet"]
 [ext_resource type="Script" uid="uid://cogfcjl1h1kgn" path="res://scripts/games/star/StarSpawner.cs" id="7_trtic"]
 [ext_resource type="PackedScene" uid="uid://b4vu1vx8g5up8" path="res://scenes/ui.tscn" id="8_ir15t"]
+[ext_resource type="PackedScene" uid="uid://d55wyyfgdlm4" path="res://prefabs/star.tscn" id="8_vtaks"]
 [ext_resource type="Script" uid="uid://drr1bnp6br4pk" path="res://scripts/games/meteorite/MeteoriteSpawner.cs" id="9_trtic"]
+[ext_resource type="PackedScene" uid="uid://du2ogu62a1u6" path="res://prefabs/meteorite.tscn" id="10_kvpfn"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -64,15 +66,18 @@ parameters/looping = true
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("6_kvuet")
 
-[node name="StarSpawner" type="Node2D" parent="."]
+[node name="StarSpawner" type="Node2D" parent="." node_paths=PackedStringArray("Camera", "AudioPlayer", "Player")]
 script = ExtResource("7_trtic")
-CameraPath = NodePath("../Player/Camera2D")
-AudioPlayerPath = NodePath("../Player/AudioStreamPlayer")
+Camera = NodePath("../Player/Camera2D")
+AudioPlayer = NodePath("../Player/AudioStreamPlayer")
+Player = NodePath("../Player")
 MidiFilePath = "res://sounds/黒魔 - Chroma - 日記 - 04 20240206.mid"
+StarPrefab = ExtResource("8_vtaks")
 
-[node name="MeteoriteSpawner" type="Node2D" parent="."]
+[node name="MeteoriteSpawner" type="Node2D" parent="." node_paths=PackedStringArray("Camera", "StarSpawner")]
 script = ExtResource("9_trtic")
-CameraPath = NodePath("../Player/Camera2D")
-StarSpawnerPath = NodePath("../StarSpawner")
+Camera = NodePath("../Player/Camera2D")
+StarSpawner = NodePath("../StarSpawner")
+MeteoritePrefab = ExtResource("10_kvpfn")
 
 [node name="UI" parent="." instance=ExtResource("8_ir15t")]

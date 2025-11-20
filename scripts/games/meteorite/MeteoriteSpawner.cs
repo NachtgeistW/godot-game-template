@@ -3,17 +3,15 @@ using Godot;
 using Plutono.Scripts.Utils;
 using System.Collections.Generic;
 
-namespace starrynight;
+namespace StarfallNight;
 
 public partial class MeteoriteSpawner : Node2D
 {
-    [Export] public NodePath CameraPath { get; set; }
-    [Export] public NodePath StarSpawnerPath { get; set; }
-
-    private Camera2D camera;
-    private StarSpawner starSpawner;
-    private IStarGenerator generator;
-    private PackedScene meteoritePrefab;
+    [Export] private Camera2D Camera { get; set; }
+    [Export] private StarSpawner StarSpawner { get; set; }
+    [Export] private PackedScene MeteoritePrefab { get; set; }
+    private RandomStarGenerator generator;    
+    
     private float nextSpawnX;
     private readonly List<Node2D> activeMeteorites = [];
 
@@ -24,18 +22,13 @@ public partial class MeteoriteSpawner : Node2D
 
     public override void _Ready()
     {
-        camera = GetNode<Camera2D>(CameraPath);
-        starSpawner = GetNode<StarSpawner>(StarSpawnerPath);
         generator = new RandomStarGenerator();
-        meteoritePrefab = GD.Load<PackedScene>("res://prefabs/meteorite.tscn");
 
         currentSpawnInterval = Parameters.MeteoriteInitialSpawnInterval;
-        nextSpawnX = camera.GlobalPosition.X + Parameters.MeteoriteSpawnDistance;
+        nextSpawnX = Camera.GlobalPosition.X + Parameters.MeteoriteSpawnDistance;
         elapsedTime = 0f;
 
         random = new Random();
-
-        Debug.Log("MeteoriteSpawner initialized with star collision avoidance");
     }
 
     public override void _Process(double delta)
@@ -43,14 +36,12 @@ public partial class MeteoriteSpawner : Node2D
         elapsedTime += (float)delta;
         UpdateDifficulty();
 
-        var cameraX = camera.GlobalPosition.X;
+        var cameraX = Camera.GlobalPosition.X;
 
         while (cameraX + Parameters.MeteoriteSpawnDistance >= nextSpawnX)
         {
-            // Check for star collision before spawning
-            if (starSpawner != null && starSpawner.IsPositionNearStar(nextSpawnX))
+            if (StarSpawner != null && StarSpawner.IsPositionNearStar(nextSpawnX))
             {
-                // Too close to a star, delay spawn
                 nextSpawnX += Parameters.MinStarMeteoriteDistance * 0.5f;
                 continue;
             }
@@ -76,7 +67,7 @@ public partial class MeteoriteSpawner : Node2D
     private void SpawnMeteorite(float xPosition)
     {
         var meteoritePosition = generator.GenerateStarPosition(xPosition);
-        var meteorite = meteoritePrefab.Instantiate<Node2D>();
+        var meteorite = MeteoritePrefab.Instantiate<Node2D>();
         meteorite.GlobalPosition = meteoritePosition;
 
         var sprite2D = meteorite.GetNode<Sprite2D>("Sprite2D");

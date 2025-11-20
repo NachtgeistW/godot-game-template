@@ -2,18 +2,14 @@ using Godot;
 using Plutono.Scripts.Utils;
 using System.Collections.Generic;
 
-namespace starrynight;
+namespace StarfallNight;
 
 public class MidiStarGenerator
 {
     private readonly List<MidiNoteData> notes;
     private readonly HashSet<int> spawnedNoteIndices = [];
     private readonly RandomNumberGenerator random = new();
-
-    /// <summary>
-    /// Create MIDI star generator from parsed MIDI file
-    /// </summary>
-    /// <param name="midiFilePath">Path to MIDI file (res:// path)</param>
+    
     public MidiStarGenerator(string midiFilePath)
     {
         var parser = new MidiNoteParser(midiFilePath);
@@ -67,7 +63,6 @@ public class MidiStarGenerator
             if (relativeToCamera is >= spawnWindowMin and <= spawnWindowMax)
             {
                 var yPosition = random.RandfRange(Parameters.MinStarHeight, Parameters.MaxStarHeight);
-                //var yPosition = 0;
                 var starPosition = new Vector2(idealStarX, yPosition);
 
                 starsToSpawn.Add(starPosition);
@@ -77,23 +72,9 @@ public class MidiStarGenerator
 
         return starsToSpawn;
     }
-
-    /// <summary>
-    /// Reset spawned notes tracking (for looping or restart)
-    /// </summary>
+    
     public void Reset()
     {
         spawnedNoteIndices.Clear();
-        Debug.Log("MidiStarGenerator reset");
     }
-
-    /// <summary>
-    /// Get total number of notes
-    /// </summary>
-    public int GetNoteCount() => notes.Count;
-
-    /// <summary>
-    /// Get number of spawned notes
-    /// </summary>
-    public int GetSpawnedCount() => spawnedNoteIndices.Count;
 }

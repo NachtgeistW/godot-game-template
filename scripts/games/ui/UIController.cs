@@ -2,7 +2,7 @@ using Godot;
 using Plutono.Util;
 using Plutono.Scripts.Utils;
 
-namespace starrynight;
+namespace StarfallNight;
 
 public partial class UIController : CanvasLayer
 {

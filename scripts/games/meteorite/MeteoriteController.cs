@@ -1,8 +1,8 @@
 using Godot;
 using Plutono.Util;
-using starrynight.scripts.games;
+using StarfallNight.scripts.games;
 
-namespace starrynight;
+namespace StarfallNight;
 
 public partial class MeteoriteController : Area2D
 {

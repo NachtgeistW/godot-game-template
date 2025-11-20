@@ -1,16 +1,16 @@
 using Godot;
 using Plutono.Scripts.Utils;
 using Plutono.Util;
-using starrynight;
+using StarfallNight;
 
-namespace starrynight.scripts.games;
+namespace StarfallNight.scripts.games;
 
 public partial class PlayerController : CharacterBody2D
 {
     [Export] public float MoveSpeed = 5f;
 
-    private Vector2 _targetPosition;
-    private Platform _platform;
+    private Vector2 targetPosition;
+    private Platform platform;
 
     [Export] public float MinHeight = -90f;
     [Export] public float MaxHeight = 90f;
@@ -28,8 +28,8 @@ public partial class PlayerController : CharacterBody2D
 
     public override void _Ready()
     {
-        _targetPosition = GlobalPosition;
-        _platform = OsDetector.Platform;
+        targetPosition = GlobalPosition;
+        platform = OsDetector.Platform;
 
         CurrentSpeed = InitialSpeed;
         currentHealth = Parameters.MaxHealth;
@@ -61,7 +61,7 @@ public partial class PlayerController : CharacterBody2D
 
     public override void _Process(double delta)
     {
-        if (_platform == Platform.PC)
+        if (platform == Platform.PC)
         {
             UpdateTargetPositionOnPc();
         }
@@ -73,12 +73,12 @@ public partial class PlayerController : CharacterBody2D
 
         void UpdateTargetPositionOnPc()
         {
-            _targetPosition.Y = GetGlobalMousePosition().Y;
-            if (_targetPosition.Y > MaxHeight)
-                _targetPosition.Y = MaxHeight;
-            if (_targetPosition.Y < MinHeight)
-                _targetPosition.Y = MinHeight;
-            _targetPosition.X = GlobalPosition.X;
+            targetPosition.Y = GetGlobalMousePosition().Y;
+            if (targetPosition.Y > MaxHeight)
+                targetPosition.Y = MaxHeight;
+            if (targetPosition.Y < MinHeight)
+                targetPosition.Y = MinHeight;
+            targetPosition.X = GlobalPosition.X;
         }
 
         void IncreaseSpeed()
@@ -98,7 +98,7 @@ public partial class PlayerController : CharacterBody2D
 
             void LerpYAxisPosition()
             {
-                GlobalPosition = GlobalPosition.Lerp(_targetPosition, MoveSpeed * (float)delta);
+                GlobalPosition = GlobalPosition.Lerp(targetPosition, MoveSpeed * (float)delta);
             }
 
             void IncreaseXAxisSpeed()
@@ -110,7 +110,7 @@ public partial class PlayerController : CharacterBody2D
 
     public override void _Input(InputEvent @event)
     {
-        if (_platform is Platform.Android or Platform.iOS)
+        if (platform is Platform.Android or Platform.iOS)
         {
             Vector2? touchPosition = null;
 
@@ -133,12 +133,12 @@ public partial class PlayerController : CharacterBody2D
 
         void UpdateTargetPositionOnMobile(Vector2 globalTouchPosition)
         {
-            _targetPosition.Y = globalTouchPosition.Y;
-            if (_targetPosition.Y > MaxHeight)
-                _targetPosition.Y = MaxHeight;
-            if (_targetPosition.Y < MinHeight)
-                _targetPosition.Y = MinHeight;
-            _targetPosition.X = globalTouchPosition.X;
+            targetPosition.Y = globalTouchPosition.Y;
+            if (targetPosition.Y > MaxHeight)
+                targetPosition.Y = MaxHeight;
+            if (targetPosition.Y < MinHeight)
+                targetPosition.Y = MinHeight;
+            targetPosition.X = globalTouchPosition.X;
         }
     }
 }

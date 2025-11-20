@@ -1,6 +1,6 @@
 using Plutono.Util;
 
-namespace starrynight;
+namespace StarfallNight;
 
 public struct StarCollectedEvent : IEvent;
 

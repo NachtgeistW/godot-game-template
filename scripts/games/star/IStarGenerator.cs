@@ -1,6 +1,6 @@
 using Godot;
 
-namespace starrynight;
+namespace StarfallNight;
 
 public interface IStarGenerator
 {
