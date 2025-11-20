@@ -66,7 +66,7 @@ public partial class PlayerController : CharacterBody2D
             UpdateTargetPositionOnPc();
         }
 
-        //IncreaseSpeed();
+        IncreaseSpeed();
         UpdatePlayerPosition();
         
         return;
