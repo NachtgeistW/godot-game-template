@@ -26,6 +26,9 @@ public partial class UIController : CanvasLayer
         UpdateScoreDisplay(0);
         UpdateHealthDisplay(Parameters.MaxHealth);
 
+        restartButton.Text = Tr("RESTART");
+        menuButton.Text = Tr("MENU");
+
         restartButton.Pressed += OnRestartPressed;
         menuButton.Pressed += OnMenuPressed;
     }
@@ -66,8 +69,7 @@ public partial class UIController : CanvasLayer
     private void OnMenuPressed()
     {
         GetTree().Paused = false;
-        // TODO: Implement main menu scene transition
-        GetTree().Quit();
+        GetTree().ChangeSceneToFile("res://scenes/start_menu.tscn");
     }
 
     public override void _ExitTree()

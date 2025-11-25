@@ -15,9 +15,13 @@ config/name_localized={
 "zh_CN": "繁星坠落的夜晚"
 }
 config/version="0.0.1"
-run/main_scene="uid://d4fuuhpybpvnp"
+run/main_scene="res://scenes/start_menu.tscn"
 config/features=PackedStringArray("4.5", "C#", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SaveManager="*res://scripts/utils/SaveManager.cs"
 
 [display]
 
@@ -33,12 +37,9 @@ project/assembly_name="starry-night"
 
 [internationalization]
 
+locale/translations=PackedStringArray("res://translations/strings.csv")
 locale/locale_filter_mode=1
 locale/country_filter=["CN"]
-
-[autoload]
-
-SaveManager="*res://scripts/utils/SaveManager.cs"
 
 [rendering]
 
